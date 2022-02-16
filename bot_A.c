@@ -181,7 +181,7 @@ void resetTarget(Ship *ship) {
 }
 
 void sell(Ship *ship) {
-  fprintf(stderr, "Tentando vender");
+  fprintf(stderr, "Vendendo em (%i,%i)",(*ship).x,(*ship).y);
   resetTarget(ship);
   (*ship).currentWeight = 0;
   printf("SELL\n");
@@ -189,6 +189,7 @@ void sell(Ship *ship) {
 void fish(Ship *ship) {
   (*ship).currentWeight++;
   (*ship).state = 1;
+  fprintf(stderr, "Pescando (%i,%i)",(*ship).x,(*ship).y);
   printf("FISH\n");
 }
 
@@ -207,7 +208,7 @@ void move(Ship *ship) {
 
 void think(Ship *ship, Enemies *otherBoats) {
   // Se o navio estiver cheio, volte para o porto
-  if ((*ship).currentWeight > 5 || ((*ship).state == 1 && ((*ship).target.value == 12) || ((*ship).target.value == 22) || ((*ship).target.value == 32) )) {
+  if ((*ship).currentWeight > 9 || ((*ship).state == 1 && ((*ship).target.value == 12) || ((*ship).target.value == 22) || ((*ship).target.value == 32) )) {
     Pixel target;
     target.x = (*ship).closerHarbor.x;
     target.y = (*ship).closerHarbor.y;
@@ -226,7 +227,7 @@ void think(Ship *ship, Enemies *otherBoats) {
       fish(ship);
     } else {
       resetTarget(ship);
-      printf("UP\n");
+      move(ship);
     }
   } else {
     move(ship);
@@ -267,7 +268,6 @@ int main() {
     // LÊ OS DADOS DO JOGO E ATUALIZA OS DADOS DO BOT
     readData(h, w, &ship, &otherBoats);
     think(&ship, &otherBoats);
-    fprintf(stderr, "(%i,%i) peso: %i",ship.target.x,ship.target.y, ship.currentWeight);
     // lê qual foi o resultado da ação (e eventualmente atualiza os dados do bot).
     scanf("%s", line);
     if (strcmp(line, "BUSY\n") == 0) {
