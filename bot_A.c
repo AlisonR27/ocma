@@ -50,6 +50,7 @@ typedef struct {
     Estados:
     0 - Indo até alvo
     1 - Pescando
+    2 - Indo vender
   */
   int state;
 } Ship;
@@ -60,6 +61,9 @@ int getDistance(Ship ship, Pixel pixel) {
 }
 void updateTarget(int x, int y, Ship *ship, int v) {
   if (v == 0 && v == 1 && v == 11 && v == 21 && v == 31) {
+    return;
+  }
+  if((*ship).state == 2) {
     return;
   }
   if (v != 0 && v != 1 && v != 11 && v != 21 && v != 31) {
@@ -177,6 +181,7 @@ void resetTarget(Ship *ship) {
 }
 
 void sell(Ship *ship) {
+  fprintf(stderr, "Tentando vender");
   resetTarget(ship);
   (*ship).currentWeight = 0;
   printf("SELL\n");
@@ -190,17 +195,9 @@ void fish(Ship *ship) {
 void move(Ship *ship) { 
   // Se estiver a direita do x do alvo, volte;
   if ((*ship).x > (*ship).target.x) {
-    if (!(*ship).enemyAtLeft) {
-      printf("LEFT\n");
-    } else {
-      printf("UP\n");
-    }
+    printf("LEFT\n");
   } else if ((*ship).x < (*ship).target.x) {
-    if (!(*ship).enemyAtRight) {
-      printf("RIGHT\n");
-    } else {
-      printf("UP");
-    }
+    printf("RIGHT\n");
   } else if ((*ship).y > (*ship).target.y){
     printf("UP\n");
   } else if ((*ship).y < (*ship).target.y){
@@ -212,12 +209,13 @@ void think(Ship *ship, Enemies *otherBoats) {
   // Se o navio estiver cheio, volte para o porto
   if ((*ship).currentWeight > 5 || ((*ship).state == 1 && ((*ship).target.value == 12) || ((*ship).target.value == 22) || ((*ship).target.value == 32) )) {
     Pixel target;
-    fprintf(stderr, "harbor(%i,%i)", (*ship).closerHarbor.x,(*ship).closerHarbor.y);
     target.x = (*ship).closerHarbor.x;
     target.y = (*ship).closerHarbor.y;
     target.value = 1;
     (*ship).target = target;
-    (*ship).state = 0;
+    (*ship).hasTarget = 1; 
+    (*ship).state = 2;
+    move(ship);
   }
   // Já está no target
   else if ((*ship).target.x == (*ship).x && (*ship).target.y == (*ship).y) {
@@ -228,7 +226,7 @@ void think(Ship *ship, Enemies *otherBoats) {
       fish(ship);
     } else {
       resetTarget(ship);
-      think(ship, otherBoats);
+      printf("UP\n");
     }
   } else {
     move(ship);

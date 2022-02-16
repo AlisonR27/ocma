@@ -6,7 +6,7 @@
     {
       "label": "Compilar todos os bots e rodar o OCMA.",
       "type": "shell",
-      "command": "gcc bot_A.c -o potengi; gcc bot_B.c -o igapoh; node ocma.js potengi igapoh -m -mr 30;",
+      "command": "gcc bot_A.c -o potengi; gcc bot_B.c -o igapoh; node ocma.js potengi igapoh -m -mr 10;",
       "problemMatcher": [],
       "group": {
         "kind": "build",
