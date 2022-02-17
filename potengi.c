@@ -27,7 +27,7 @@ int main() {
   Ship ship;
   ship.hasTarget = 0;
   ship.distanceToHarbor = 0;
-  ship.distanceToTarget = 0 ;
+  ship.distanceToTarget = 0;
   ship.hasHarbor = 0;
   ship.isSet = 0;
   ship.target.x = 0, ship.target.y = 0;

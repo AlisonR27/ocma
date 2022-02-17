@@ -6,39 +6,44 @@
 
 #define MAX_STR 50
 
+enum fishType {
+  Tainha = 1, 
+  Cioba,
+  Robalo
+} fishTypes;
+
+int calcImportance(Ship ship, Pixel pixel, int distance) {
+  return pixel.value - distance*2;
+}
+
 int getDistance(Ship ship, Pixel pixel) {
   int numberOfRounds = abs((ship.x - pixel.x)) + abs((ship.y - pixel.y));
   return (numberOfRounds);
 }
 void updateTarget(int x, int y, Ship *ship, int v) {
-  if (v == 0 && v == 1 && v == 11 && v == 21 && v == 31) {
-    return;
-  }
   if(ship->state == 2) {
     return;
   }
-  if (v != 0 && v != 1 && v != 11 && v != 21 && v != 31) {
-    if (ship->hasTarget == 0) {
-      Pixel target;
-      target.x = x;
-      target.y = y;
-      target.value = v;
-      ship->target = target;
-      ship->hasTarget = 1;
-      ship->distanceToTarget = getDistance((*ship), target);
-    } else {
-      if (ship->target.x == x && ship->target.y == y) {
-        ship->target.value = v;
-      }
-      Pixel currentPixel;
-      currentPixel.x = x;
-      currentPixel.y = y;
-      currentPixel.value = v;
-      int distanceToCurrent = getDistance((*ship), currentPixel);
-      if (ship->distanceToTarget > distanceToCurrent){
-        ship->target = currentPixel;
-        ship->distanceToTarget = distanceToCurrent;
-      }
+  if (ship->hasTarget == 0) {
+    Pixel target;
+    target.x = x;
+    target.y = y;
+    target.value = v;
+    ship->target = target;
+    ship->state = 0;
+    ship->hasTarget = 1;
+    ship->distanceToTarget = getDistance((*ship), target);
+  } else {
+    Pixel currentPixel;
+    currentPixel.x = x;
+    currentPixel.y = y;
+    currentPixel.value = v;
+    int distanceToCurrent = getDistance((*ship), currentPixel);
+    int currentImportance = calcImportance((*ship), currentPixel, distanceToCurrent);
+    int oldTargetImportance = calcImportance((*ship), ship->target, ship->distanceToTarget);
+    if (currentImportance > oldTargetImportance){
+      ship->target = currentPixel;
+      ship->distanceToTarget = distanceToCurrent;
     }
   }
 }
@@ -75,7 +80,9 @@ void readData(int h, int w, Ship *ship, Enemies *otherBoats) {
             break;
           }
           default:
-            updateTarget(j,i,ship,v);
+            if ((v > 11 && v < 20) || (v > 21 && v < 30) || (v > 31 && v < 40)) {
+              updateTarget(j,i,ship,v);
+            }
             break;
         }
       }
@@ -97,10 +104,6 @@ void readData(int h, int w, Ship *ship, Enemies *otherBoats) {
       ship->y = y;
       ship->isSet = 1;
       // fprintf(stderr, "(%i,%i)",ship->x, ship->y);
-      if (ship->hasHarbor == 0) {
-        ship->closerHarbor.x = x;
-        ship->closerHarbor.y = y;
-      }
     } else {
       Pixel boat;
       boat.x = x;

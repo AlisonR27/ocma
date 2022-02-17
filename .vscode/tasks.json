@@ -6,7 +6,7 @@
     {
       "label": "Compilar todos os bots e rodar o OCMA.",
       "type": "shell",
-      "command": "gcc potengi*.c  -o potengi; node ocma.js potengi;",
+      "command": "gcc potengi*.c  -o potengi; node ocma.js potengi -m;",
       "problemMatcher": [],
       "group": {
         "kind": "build",
