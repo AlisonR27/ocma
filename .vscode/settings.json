@@ -1,6 +1,11 @@
 {
   "files.associations": {
     "stdio.h": "c",
-    "string.h": "c"
+    "string.h": "c",
+    "stdlib.h": "c",
+    "potengi_actions.h": "c",
+    "stdbool.h": "c",
+    "potengi_structs.h": "c",
+    "potengi_map_reader.h": "c"
   }
 }
